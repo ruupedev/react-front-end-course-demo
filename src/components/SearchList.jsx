@@ -1,49 +1,38 @@
 import { useState } from "react";
 import ListItems from "./ListItems";
-import ShowSearch from "./ShowSearch";
+import { Box, TextField } from "@mui/material";
 
 function SearchList({ data }) {
   const [searchWord, setSearchWord] = useState("");
-  const [showList, setShowList] = useState("");
 
-  const change = (e) => {
-    setSearchWord(e.target.value);
-  };
-
-  const search = () => {
-    let result = data.filter((tavara) =>
-      tavara.nimi.toUpperCase().includes(searchWord.toUpperCase()),
-    );
-
-    let answer;
-
-    if (result.length === 0) {
-      answer = <p>Nothing found with this search</p>;
-    } else {
-      answer = <ShowSearch data={result} />;
-    }
-
-    setShowList(answer);
-  };
+  const filtered = data.filter((tavara) =>
+    tavara.nimi.toUpperCase().includes(searchWord.toUpperCase()),
+  );
 
   return (
     <>
-      <form>
-        <label>
-          Haku
-          <input
-            type="text"
-            name="searchWord"
-            value={searchWord}
-            onChange={(e) => change(e)}
-          />
-          &nbsp;
-        </label>
-        <input type="button" value="Hae" onClick={() => search()} />
-      </form>
+      <Box
+        component="form"
+        sx={{ display: "flex", gap: 2, mb: 3, justifyContent: "center", pt: 3 }}
+      >
+        <TextField
+          label="Haku"
+          variant="outlined"
+          size="small"
+          value={searchWord}
+          onChange={(e) => setSearchWord(e.target.value)}
+        />
+      </Box>
 
-      {showList}
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        {searchWord && filtered.length === 0 ? (
+          <p>Ei hakutuloksia</p>
+        ) : (
+          <ListItems data={filtered} />
+        )}
+      </Box>
     </>
   );
 }
+
 export default SearchList;
