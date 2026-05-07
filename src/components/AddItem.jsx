@@ -22,13 +22,15 @@ function AddItem({ addTavara }) {
     valmistaja: "",
     hinta: 0,
     myyty: false,
+    kuva: null,
   });
 
   const change = (e) => {
-    setItem({
-      ...item,
-      [e.target.name]: e.target.value,
-    });
+    setItem({ ...item, [e.target.name]: e.target.value });
+  };
+
+  const changeFile = (e) => {
+    setItem({ ...item, kuva: e.target.files[0] });
   };
 
   const AddItemToList = () => {
@@ -40,6 +42,7 @@ function AddItem({ addTavara }) {
       valmistaja: "",
       hinta: 0,
       myyty: false,
+      kuva: null,
     });
     setErrors({});
   };
@@ -87,6 +90,17 @@ function AddItem({ addTavara }) {
           helperText={errors.kategoria}
           fullWidth
         />
+        <Button variant="outlined" component="label">
+          {item.kuva ? `Kuva: ${item.kuva.name}` : "Valitse kuva"}
+          <input
+            type="file"
+            name="kuva"
+            accept="image/*"
+            hidden
+            onChange={changeFile}
+          />
+        </Button>
+
         <Button variant="contained" onClick={AddItemToList}>
           Lisää
         </Button>

@@ -11,6 +11,7 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  CardMedia,
   IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
@@ -46,12 +47,24 @@ export default function ProductCard({
     setMuokkaus({ ...muokkaus, [e.target.name]: e.target.value });
   };
 
+  const changeFile = (e) => {
+    setMuokkaus({ ...muokkaus, kuva: e.target.files[0] });
+  };
+
   return (
     <Container sx={{ pt: 4 }}>
       <Grid container spacing={2}>
         {data.map((tavara) => (
           <Grid item xs={12} sm={6} md={4} key={tavara.id}>
             <Card sx={{ position: "relative" }}>
+              {tavara.kuva && (
+                <CardMedia
+                  component="img"
+                  sx={{ height: 180, objectFit: "cover" }}
+                  image={`http://localhost:3001/uploads/${tavara.kuva}`}
+                  alt={tavara.nimi}
+                />
+              )}
               <IconButton
                 size="small"
                 sx={{ position: "absolute", top: 8, right: 8 }}
@@ -126,6 +139,20 @@ export default function ProductCard({
               fullWidth
               margin="dense"
             />
+            <Button variant="outlined" component="label" sx={{ mt: 2 }}>
+              {muokkaus.kuva instanceof File
+                ? `Uusi kuva: ${muokkaus.kuva.name}`
+                : muokkaus.kuva
+                  ? `Nykyinen kuva: ${muokkaus.kuva}`
+                  : "Valitse kuva"}
+              <input
+                type="file"
+                name="kuva"
+                accept="image/*"
+                hidden
+                onChange={changeFile}
+              />
+            </Button>
           </DialogContent>
         )}
         <DialogActions sx={{ px: 3, pb: 2 }}>
