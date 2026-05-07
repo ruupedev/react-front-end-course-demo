@@ -22,6 +22,12 @@ import MenuMUI from "./components/Menu";
 import { BrowserRouter, Routes, Route } from "react-router";
 import ProductCard from "./components/ProductCard";
 import Analytics from "./components/Analytics";
+import {
+  getTavarat,
+  addTavara as apiAddTavara,
+  editTavara as apiEditTavara,
+  poistaTavara as apiPoistaTavara,
+} from "./services/api";
 
 function App() {
   /*  const [tavarat, setTavarat] = useState([
@@ -48,44 +54,56 @@ function App() {
     },
   ]); */
 
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const [tavarat, setTavarat] = useState([]);
 
   const fetchData = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/tavarat");
-      const data = await response.json();
+      const data = await getTavarat();
       setTavarat(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const addTavara = (uusiTavara) => {
-    setTavarat([...tavarat, uusiTavara]);
+  const addTavara = async (uusiTavara) => {
+    try {
+      await apiAddTavara(uusiTavara);
+      fetchData();
+    } catch (error) {
+      console.error("Lisäys epäonnistui:", error);
+    }
   };
 
-  const toggleMyyty = (nimi) => {
-    setTavarat(
-      tavarat.map((tavara) =>
-        tavara.nimi === nimi ? { ...tavara, myyty: !tavara.myyty } : tavara,
-      ),
-    );
+  const toggleMyyty = async (id) => {
+    try {
+      const tavara = tavarat.find((t) => t.id === id);
+      await apiEditTavara(id, { ...tavara, myyty: !tavara.myyty });
+      fetchData();
+    } catch (error) {
+      console.error("Muokkaus epäonnistui:", error);
+    }
   };
 
-  const poistaTavara = (nimi) => {
-    setTavarat(tavarat.filter((tavara) => tavara.nimi !== nimi));
+  const poistaTavara = async (id) => {
+    try {
+      await apiPoistaTavara(id);
+      fetchData();
+    } catch (error) {
+      console.error("Poisto epäonnistui:", error);
+    }
   };
 
-  const editTavara = (vanhanimi, muokattu) => {
-    setTavarat(
-      tavarat.map((tavara) =>
-        tavara.nimi === vanhanimi ? { ...muokattu } : tavara,
-      ),
-    );
+  const editTavara = async (id, muokattu) => {
+    try {
+      await apiEditTavara(id, muokattu);
+      fetchData();
+    } catch (error) {
+      console.error("Muokkaus epäonnistui:", error);
+    }
   };
 
   const theme = createTheme({

@@ -24,10 +24,10 @@ export default function ProductCard({
 }) {
   const [open, setOpen] = useState(false);
   const [muokkaus, setMuokkaus] = useState(null);
-  const [vanhanimi, setVanhanimi] = useState("");
+  /*   const [vanhanimi, setVanhanimi] = useState(""); */
 
   const avaaMuokkaus = (tavara) => {
-    setVanhanimi(tavara.nimi);
+    /*   setVanhanimi(tavara.nimi); */
     setMuokkaus({ ...tavara });
     setOpen(true);
   };
@@ -38,7 +38,7 @@ export default function ProductCard({
   };
 
   const tallenna = () => {
-    editTavara(vanhanimi, muokkaus);
+    editTavara(muokkaus.id, muokkaus);
     suljeMuokkaus();
   };
 
@@ -50,7 +50,7 @@ export default function ProductCard({
     <Container sx={{ pt: 4 }}>
       <Grid container spacing={2}>
         {data.map((tavara) => (
-          <Grid item xs={12} sm={6} md={4} key={tavara.nimi}>
+          <Grid item xs={12} sm={6} md={4} key={tavara.id}>
             <Card sx={{ position: "relative" }}>
               <IconButton
                 size="small"
@@ -80,7 +80,7 @@ export default function ProductCard({
                   size="small"
                   color="secondary"
                   sx={{ mt: 1, mr: 1 }}
-                  onClick={() => toggleMyyty(tavara.nimi)}
+                  onClick={() => toggleMyyty(tavara.id)}
                 >
                   {tavara.myyty ? "Merkitse myyntiin" : "Merkitse myydyksi"}
                 </Button>
@@ -134,7 +134,7 @@ export default function ProductCard({
             color="error"
             sx={{ mr: "auto" }}
             onClick={() => {
-              poistaTavara(vanhanimi);
+              poistaTavara(muokkaus.id);
               suljeMuokkaus();
             }}
           >

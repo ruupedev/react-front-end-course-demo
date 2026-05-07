@@ -1,28 +1,35 @@
 import axios from "axios";
 
-let server = "http://localhost:3001";
+const PALVELIN = "http://localhost:3001";
+
+// Muuntaa frontin boolean-arvot backendin odottamaan muotoon
+const valmisteleData = (tavara) => ({
+  ...tavara,
+  myyty: tavara.myyty ? "true" : "false",
+});
 
 export const getTavarat = async () => {
-  const response = await axios.get(`${server}/api/tavarat`);
+  const response = await axios.get(`${PALVELIN}/api/tavarat`);
   return response.data;
 };
 
 export const addTavara = async (tavara) => {
-  const response = await axios.post(`${server}/api/tavarat`, tavara);
-  return response.data;
-};
-
-export const toggleMyyty = async (id, myyty) => {
-  const response = await axios.put(`${server}/api/tavarat/${id}`, { myyty });
+  const response = await axios.post(
+    `${PALVELIN}/api/tavarat`,
+    valmisteleData(tavara),
+  );
   return response.data;
 };
 
 export const editTavara = async (id, tavara) => {
-  const response = await axios.put(`${server}/api/tavarat/${id}`, tavara);
+  const response = await axios.put(
+    `${PALVELIN}/api/tavarat/${id}`,
+    valmisteleData(tavara),
+  );
   return response.data;
 };
 
 export const poistaTavara = async (id) => {
-  const response = await axios.delete(`${server}/api/tavarat/${id}`);
+  const response = await axios.delete(`${PALVELIN}/api/tavarat/${id}`);
   return response.data;
 };
