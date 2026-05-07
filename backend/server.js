@@ -51,6 +51,12 @@ db.run(`
 app.get("/api/tavarat", (req, res) => {
   db.all("SELECT * FROM tavarat", [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
+
+    for (const row of rows) {
+      const onMyyty = row.myyty === 1;
+      row.myyty = onMyyty;
+    }
+
     res.json(rows);
   });
 });

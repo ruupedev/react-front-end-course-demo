@@ -8,7 +8,7 @@
   npm install recharts
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ListItems from "./components/ListItems";
 import SearchList from "./components/SearchList";
 import AddItem from "./components/AddItem";
@@ -24,7 +24,7 @@ import ProductCard from "./components/ProductCard";
 import Analytics from "./components/Analytics";
 
 function App() {
-  const [tavarat, setTavarat] = useState([
+  /*  const [tavarat, setTavarat] = useState([
     {
       kategoria: "kirjat",
       nimi: "Luvattu Maa",
@@ -46,7 +46,23 @@ function App() {
       hinta: 4,
       myyty: true,
     },
-  ]);
+  ]); */
+
+  const [tavarat, setTavarat] = useState([]);
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/api/tavarat");
+      const data = await response.json();
+      setTavarat(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const addTavara = (uusiTavara) => {
     setTavarat([...tavarat, uusiTavara]);
