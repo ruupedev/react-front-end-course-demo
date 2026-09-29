@@ -2,6 +2,8 @@ import axios from "axios";
 
 const PALVELIN = "http://localhost:3001";
 
+
+
 const tavaraToFormData = (tavara) => {
   const fd = new FormData();
   fd.append("kategoria", tavara.kategoria);

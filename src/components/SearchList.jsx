@@ -2,7 +2,7 @@ import { useState } from "react";
 import ListItems from "./ListItems";
 import { Box, TextField } from "@mui/material";
 
-function SearchList({ data }) {
+function SearchList({ data, toggleMyyty, editTavara, poistaTavara }) {
   const [searchWord, setSearchWord] = useState("");
 
   const filtered = data.filter((tavara) =>
@@ -28,7 +28,12 @@ function SearchList({ data }) {
         {searchWord && filtered.length === 0 ? (
           <p>Ei hakutuloksia</p>
         ) : (
-          <ListItems data={filtered} />
+          <ListItems
+            data={filtered}
+            toggleMyyty={toggleMyyty}
+            editTavara={editTavara}
+            poistaTavara={poistaTavara}
+          />
         )}
       </Box>
     </>

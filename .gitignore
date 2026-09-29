@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Stray non-image files in uploads / archives
+backend/uploads/*.exe
+backend/uploads/*.msi
+*.zip

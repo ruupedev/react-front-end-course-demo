@@ -80,7 +80,10 @@ app.post("/api/tavarat", upload.single("kuva"), (req, res) => {
     [kategoria, nimi, valmistaja, hinta, myyty === "true" ? 1 : 0, kuva],
     function (err) {
       if (err) return res.status(500).json({ error: err.message });
-      res.json({ id: this.lastID });
+      res.json({
+        id: this.lastID,
+        message: "Tuote lisätty onnistuneesti!",
+      });
     },
   );
 });

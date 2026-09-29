@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import ListItems from "./components/ListItems";
 import SearchList from "./components/SearchList";
 import AddItem from "./components/AddItem";
+import Notification from "./components/Notification";
 /* import TabComp from "./components/TabComp"; */
 import "@fontsource/roboto";
 import { createTheme } from "@mui/material/styles";
@@ -59,6 +60,15 @@ function App() {
   }, []);
 
   const [tavarat, setTavarat] = useState([]);
+  const [notification, setNotification] = useState({
+    text: "",
+    type: "success",
+  });
+
+  const showNotification = (text, type = "success") => {
+    setNotification({ text, type });
+    setTimeout(() => setNotification({ text: "", type }), 3000);
+  };
 
   const fetchData = async () => {
     try {
@@ -69,43 +79,61 @@ function App() {
     }
   };
 
+  // LISÄYS
   const addTavara = async (uusiTavara) => {
     try {
       await apiAddTavara(uusiTavara);
       fetchData();
+      showNotification(`${uusiTavara.nimi} lisätty!`, "success");
     } catch (error) {
       console.error("Lisäys epäonnistui:", error);
+      showNotification("Lisäys epäonnistui", "error");
     }
   };
 
+  // MYYTY-TILAN VAIHTO
   const toggleMyyty = async (id) => {
     try {
       const tavara = tavarat.find((t) => t.id === id);
-      await apiEditTavara(id, { ...tavara, myyty: !tavara.myyty });
+      const uusiTila = !tavara.myyty;
+      await apiEditTavara(id, { ...tavara, myyty: uusiTila });
       fetchData();
+      showNotification(
+        uusiTila
+          ? `${tavara.nimi} merkattu myydyksi 🎉`
+          : `${tavara.nimi} palautettu myyntiin`,
+        uusiTila ? "success" : "info",
+      );
     } catch (error) {
       console.error("Muokkaus epäonnistui:", error);
+      showNotification("Muokkaus epäonnistui", "error");
     }
   };
 
+  // POISTO
   const poistaTavara = async (id) => {
     try {
+      const tavara = tavarat.find((t) => t.id === id);
       await apiPoistaTavara(id);
       fetchData();
+      showNotification(`${tavara.nimi} poistettu`, "info");
     } catch (error) {
       console.error("Poisto epäonnistui:", error);
+      showNotification("Poisto epäonnistui", "error");
     }
   };
 
+  // MUOKKAUS
   const editTavara = async (id, muokattu) => {
     try {
       await apiEditTavara(id, muokattu);
       fetchData();
+      showNotification(`${muokattu.nimi} päivitetty`, "success");
     } catch (error) {
       console.error("Muokkaus epäonnistui:", error);
+      showNotification("Muokkaus epäonnistui", "error");
     }
   };
-
   const theme = createTheme({
     palette: {
       primary: { main: grey[900], contrastText: "#FFFFFF" },
@@ -175,6 +203,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <Notification text={notification.text} type={notification.type} />
       <BrowserRouter>
         <Routes>
           <Route element={<MenuMUI />}>
@@ -189,7 +218,17 @@ function App() {
                 />
               }
             />
-            <Route path="/hae" element={<SearchList data={tavarat} />} />
+            <Route
+              path="/hae"
+              element={
+                <SearchList
+                  data={tavarat}
+                  toggleMyyty={toggleMyyty}
+                  editTavara={editTavara}
+                  poistaTavara={poistaTavara}
+                />
+              }
+            />
             <Route path="/lisaa" element={<AddItem addTavara={addTavara} />} />
             <Route path="/analytiikka" element={<Analytics data={tavarat} />} />
           </Route>
